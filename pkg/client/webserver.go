@@ -112,7 +112,8 @@ func (c *Client) startTunnel(ctx context.Context) {
 		Backoff:       600*time.Millisecond + time.Duration(c.triggers.Timers.Rand().Intn(600))*time.Millisecond,
 		SecretKey:     c.Config.APIKey,
 		Handler:       remWs.Wrap(c.prefixURLbase(c.Config.Router), c.Logger.HTTPLog.Writer()).ServeHTTP,
-		Logger:        &tunnelLogger{Logger: c.Logger},
+		// Logger:        &tunnelLogger{Logger: c.Logger},
+		Logger: c.Logger,
 	})
 	c.tunnel.Start(ctx)
 }
@@ -234,22 +235,22 @@ func (n *netConnWrapper) Write(b []byte) (int, error) {
 	return n.Conn.Write(b) //nolint:wrapcheck
 }
 
-// tunnelLogger lets us tune the logs from the mulery tunnel.
-type tunnelLogger struct {
-	mnd.Logger
-}
+// // tunnelLogger lets us tune the logs from the mulery tunnel.
+// type tunnelLogger struct {
+// 	mnd.Logger
+// }
 
-// Debugf prints a message with DEBUG prefixed.
-func (l *tunnelLogger) Debugf(format string, v ...interface{}) {
-	l.Logger.Debugf(format, v...)
-}
+// // Debugf prints a message with DEBUG prefixed.
+// func (l *tunnelLogger) Debugf(format string, v ...interface{}) {
+// 	l.Logger.Debugf(format, v...)
+// }
 
-// Errorf prints a message with ERROR prefixed.
-func (l *tunnelLogger) Errorf(format string, v ...interface{}) {
-	l.Logger.ErrorfNoShare(format, v...) // this is why we dont just pass the interface in as-is.
-}
+// // Errorf prints a message with ERROR prefixed.
+// func (l *tunnelLogger) Errorf(format string, v ...interface{}) {
+// 	l.Logger.ErrorfNoShare(format, v...) // this is why we dont just pass the interface in as-is.
+// }
 
-// Printf prints a message with INFO prefixed.
-func (l *tunnelLogger) Printf(format string, v ...interface{}) {
-	l.Logger.Printf(format, v...)
-}
+// // Printf prints a message with INFO prefixed.
+// func (l *tunnelLogger) Printf(format string, v ...interface{}) {
+// 	l.Logger.Printf(format, v...)
+// }
